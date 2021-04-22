@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use serde_json::json;
-use std::collections::HashMap;
 use warp::http::StatusCode;
 use warp::Filter;
 use warp::Rejection;
@@ -26,8 +25,9 @@ async fn main() {
         .and(warp::body::json())
         .and_then(|sent_move: Move| async move {
             // move logic
+            let possible_moves = ["up", "down", "left", "right"];
             Ok(warp::reply::json(&json!({
-                "move": "up",
+                "move": possible_moves[3],
                 "shout": ""
             }))) as Result<_, Rejection>
         });
@@ -60,9 +60,15 @@ struct SentGame {
 struct Board {
     height: u8,
     width: u8,
-    food: Vec<HashMap<String, u16>>,
-    hazards: Vec<HashMap<String, u16>>,
+    food: Vec<Pos>,
+    hazards: Vec<Pos>,
     snakes: Vec<Battlesnake>,
+}
+
+#[derive(Debug, Deserialize, Eq, PartialEq)]
+struct Pos {
+    x : u16,
+    y : u16,
 }
 
 #[derive(Debug, Deserialize, Eq, PartialEq)]
@@ -70,9 +76,9 @@ struct Battlesnake {
     id: String,
     name: String,
     health: u8,
-    body: Vec<HashMap<String, u16>>,
+    body: Vec<Pos>,
     latency: String,
-    head: HashMap<String, u16>,
+    head: Pos,
     length: u16,
     shout: String,
 }
