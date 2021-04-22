@@ -35,11 +35,15 @@ async fn main() {
         .or(start)
         .or(end)
         .or(get_move);
+    use dotenv;
+    dotenv::dotenv().expect(".env file not found");
     let port = std::env::var("PORT")
         .expect("PORT Environment Variable not set")
         .parse()
         .expect("PORT is not a valid port number");
+    println!("Listening on port {}", port);    
     warp::serve(routes).run(([0, 0, 0, 0], port)).await;
+    
 }
 
 #[derive(Debug, Deserialize)]
