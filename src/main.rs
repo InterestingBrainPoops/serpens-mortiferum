@@ -3,7 +3,9 @@ use serde_json::json;
 use warp::http::StatusCode;
 use warp::Filter;
 use warp::Rejection;
-
+fn gen_move<'a>(possible_moves : &'a [&'static str]) ->(&'a str, f32){
+    return (&possible_moves[0], 0);
+}
 #[tokio::main]
 async fn main() {
     let index = warp::path::end().map(|| {
@@ -26,8 +28,10 @@ async fn main() {
         .and_then(|sent_move: Move| async move {
             // move logic
             let possible_moves = ["up", "down", "left", "right"];
+            let out_move = gen_move(&possible_moves);
+            println!("Turn : {}, Moving: {}, with confidence {}" , 3,out_move,3);
             Ok(warp::reply::json(&json!({
-                "move": possible_moves[3],
+                "move": out_move,
                 "shout": ""
             }))) as Result<_, Rejection>
         });
@@ -85,4 +89,10 @@ struct Battlesnake {
     head: Pos,
     length: u16,
     shout: String,
+}
+
+#[derive(Debug)]
+struct Small_Board{
+    snakes:Vec<Battlesnake>,
+    size:u8
 }
