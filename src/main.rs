@@ -1,8 +1,8 @@
+use movegen::*;
 use serde_json::json;
 use warp::http::StatusCode;
 use warp::Filter;
 use warp::Rejection;
-use movegen::*;
 pub mod movegen;
 
 #[tokio::main]
